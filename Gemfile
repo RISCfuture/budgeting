@@ -1,3 +1,4 @@
+ruby '2.4.1'
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
@@ -5,37 +6,51 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+# FRAMEWORK
 gem 'rails', '~> 5.1.1'
-# Use postgresql as the database for Active Record
-gem 'pg', '~> 0.18'
-# Use Puma as the app server
-gem 'puma', '~> 3.7'
-# Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
-# Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
+gem 'puma'
+
+# MODELS
+gem 'pg'
+
+# CONTROLLERS
+gem 'responders'
+
+# VIEWS
+gem 'jbuilder'
+
+# ASSETS
+gem 'sass-rails'
+gem 'slim-rails'
 gem 'webpacker'
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.5'
-# Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 3.0'
-# Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
-
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
-
-group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-end
+gem 'autoprefixer-rails'
 
 group :development do
-  # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
-  gem 'web-console', '>= 3.3.0'
-  gem 'listen', '>= 3.0.5', '< 3.2'
+  # ERRORS
+  gem 'better_errors'
+  gem 'binding_of_caller'
+
+  # HOT RELOADING
+  gem 'listen'
 end
 
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+group :doc do
+  gem 'yard'
+  gem 'redcarpet'
+end
+
+group :test do
+  # SPECS
+  gem 'rspec-rails'
+  gem 'rails-controller-testing'
+
+  # FACTORIES
+  gem 'factory_girl_rails'
+  gem 'ffaker'
+
+  # ENVIRONMENT
+  gem 'webmock'
+  gem 'database_cleaner'
+  gem 'timecop'
+  gem 'fakefs', require: 'fakefs/safe'
+end
