@@ -2,17 +2,17 @@
   "presets": [
     "stage-2",
     ["env", {
-      "modules": false,
-      "targets": {
-        "browsers": "> 1%",
-        "uglify": 2
-      },
-      "useBuiltIns": true
-    }]
+        "production": {
+          "modules": false,
+          "targets": {"browsers": "> 1%"},
+          "useBuiltIns": true,
+          "presets": ["babili"]
+        }
+      }
+    ]
   ],
-
   "plugins": [
     "syntax-dynamic-import",
-    ["transform-class-properties", { "spec": true }]
+    ["transform-class-properties", {"spec": true}]
   ]
 }
