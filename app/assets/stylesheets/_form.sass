@@ -1,0 +1,86 @@
+form
+  font-size: $form-font-size
+  max-width: 400px
+  box-sizing: border-box
+
+  label
+    display: block
+    font-size: 14px
+    font-weight: bold
+    text-transform: uppercase
+    color: $color3
+    margin-top: 10px
+
+  input[type=text], input[type=number], select, textarea
+    font-family: 'Pragati Narrow', sans-serif
+    display: block
+    appearance: none
+    border: 2px solid $color4
+    padding: 5px
+    font-size: $form-font-size
+
+    &:focus
+      outline: none
+      border-color: $color1
+
+  fieldset
+    border: 2px solid $color4
+    padding: 5px
+    width: 100%
+    box-sizing: border-box
+
+    input[type=text], input[type=number], select, textarea
+      display: inline-block
+      border: none
+      padding: 0
+
+    select
+      padding: 5px 0
+
+  .field-error-group
+    &.inline
+      display: inline-block
+
+    &.error
+      input, select, textarea
+        border-color: darkred
+        color: darkred
+
+  input[type=submit], input[type=button], input[type=reset], button
+    cursor: pointer
+    font-family: 'Pragati Narrow', sans-serif
+    appearance: none
+    border: none
+    background-color: $color5
+    color: $color3
+    border-radius: 5px
+    padding: 5px
+    font-size: $form-font-size
+
+  input[type=submit]
+    background-color: $color1
+    color: white
+
+  input[type=text], textarea
+    width: 100%
+    box-sizing: border-box
+
+  .form-actions
+    margin-top: 20px
+
+  .field-row
+    display: flex
+    flex-flow: row nowrap
+    justify-content: flex-start
+    align-items: center
+
+    &>div
+      flex: 1 1 auto
+
+      &:not(:last-child)
+        margin-right: 5px
+
+.tippy-tooltip.error-theme
+  background-color: darkred
+  [x-arrow]
+    border-right-color: darkred

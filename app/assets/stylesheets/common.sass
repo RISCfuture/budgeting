@@ -1,0 +1,40 @@
+@import config
+
+$form-font-size: 18px
+
+body
+  font-family: 'Pragati Narrow', sans-serif
+  font-size: 24px
+  font-weight: 400
+  color: $color2
+
+th, strong, dt
+  font-weight: 700
+
+body
+  padding: 30px 30px calc(24px + 10px*2 + 10px)
+
+a, a:visited, a:active, a:hover
+  text-decoration: none
+  color: $color2
+  cursor: pointer
+
+table
+  width: 100%
+  box-sizing: border-box
+  border-collapse: collapse
+
+  th
+    text-align: left
+
+@import form
+@import dl
+
+table tfoot
+  position: fixed
+  bottom: 0
+  left: 0
+  width: 100%
+  border-top: 2px solid $color2
+  background-color: white
+  padding: 10px 30px

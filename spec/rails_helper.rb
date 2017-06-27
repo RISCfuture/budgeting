@@ -69,7 +69,7 @@ RSpec.configure do |config|
 
   # Timecop
   DEFAULT_TIME = ActiveSupport::TimeZone['America/Los_Angeles'].
-      local(1982, 10, 19, 12, 13)
+      local(2016, 10, 19, 12, 13)
   config.around :each do |example|
     Timecop.freeze DEFAULT_TIME
     example.run

@@ -1,0 +1,33 @@
+@import config
+
+dl
+  dt
+    color: $color4
+    font-size: 16px
+    font-weight: bold
+    text-transform: uppercase
+
+    &:not(:last-child)
+      margin-bottom: 50px
+
+  dd
+    margin: 0
+    font-size: 64px
+    color: $color3
+
+  dl
+    margin: 0
+    display: flex
+    flex-flow: row nowrap
+    align-items: baseline
+
+    dt
+      text-transform: lowercase
+      font-weight: normal
+      margin-left: 5px
+
+      &:not(:last-child)
+        margin-bottom: 0
+
+    dd:not(:first-child)
+      margin-left: 30px

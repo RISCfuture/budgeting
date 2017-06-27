@@ -7,4 +7,42 @@
 // To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
 
-console.log('Hello World from Webpacker')
+import Vue from 'vue'
+
+import store from './store/index'
+
+import VueRouter from 'vue-router'
+Vue.use(VueRouter)
+import routes from './routes'
+
+import Navbar from './components/Navbar.vue'
+Vue.component('navbar', Navbar)
+
+import 'normalize.css'
+import 'tippy.js/dist/tippy.css'
+import '../../assets/stylesheets/fonts.css'
+import '../../assets/stylesheets/common.sass'
+import '../../assets/stylesheets/ledger.sass'
+
+// add interceptor to add CSRF tokens to request
+import axios from 'axios'
+axios.interceptors.request.use(function (config) {
+  if (config.method !== 'get') {
+    let tokenName = document.querySelector('meta[name=csrf-param]').getAttribute('content')
+    let tokenValue = document.querySelector('meta[name=csrf-token]').getAttribute('content')
+    let data = config.data ? config.data : new FormData()
+    data.append(tokenName, tokenValue)
+    config.data = data
+  }
+
+  return config
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  new Vue({
+            el: '#app',
+            router: new VueRouter({routes, mode: 'history'}),
+            store
+          })
+})

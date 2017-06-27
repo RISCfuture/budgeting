@@ -24,4 +24,6 @@ module Budgeting
     # Don't generate system test files.
     config.generators.system_tests = nil
   end
+
+  SALES_TAX = 0.085
 end

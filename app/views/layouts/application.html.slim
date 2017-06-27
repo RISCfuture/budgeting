@@ -2,13 +2,13 @@ doctype html
 html lang="en"
   head
     meta charset="utf-8"
-    meta name="description" content="TODO"
+    meta name="description" content="Tim Morgan’s Budget"
     meta name="author" content="Tim Morgan"
     = csrf_meta_tags
 
-    title budgeting
+    title Tim Morgan’s Budget
 
-    = stylesheet_link_tag 'application'
+    = stylesheet_pack_tag 'application'
 
   body class=controller_name.gsub('/', '-') id="#{controller_name.gsub('/', '-')}-#{action_name}"
     = yield

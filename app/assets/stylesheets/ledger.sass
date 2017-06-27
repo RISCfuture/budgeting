@@ -1,0 +1,19 @@
+@import config
+
+table.ledger
+  thead
+    border-bottom: 2px solid $color3
+
+  tbody tr:not(.category)
+    td:first-child, th:first-child
+      padding-left: 20px
+
+  tr.category td
+    padding-top: 20px
+    color: $color4
+    font-weight: bold
+    cursor: pointer
+
+  span.disclosure-triangle
+    display: inline-block
+    width: 20px
