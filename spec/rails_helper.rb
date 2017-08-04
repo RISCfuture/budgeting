@@ -78,4 +78,12 @@ RSpec.configure do |config|
 
   # FakeFS
   # config.around(:each) { |ex| FakeFS.with_fresh { ex.run } }
+
+  # Auth
+  config.before :each do
+    if defined?(request)
+      request.env['HTTP_AUTHORIZATION'] =
+          ActionController::HttpAuthentication::Basic.encode_credentials('YOUR_LOGIN', 'YOUR_PASSWORD')
+    end
+  end
 end
