@@ -41,7 +41,7 @@ class ApplicationController < ActionController::Base
   def login_required
     if session[:logged_in]
       return true
-    elsif authenticate_with_http_basic { |l, p| l == 'YOUR_LOGIN' && p == 'YOUR_PASSWORD' }
+    elsif authenticate_with_http_basic { |l, p| l == ENV['BUDGET_USER'] && p == ENV['BUDGET_PASSWORD'] }
       session[:logged_in] = true
       return true
     else

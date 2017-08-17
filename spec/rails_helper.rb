@@ -82,8 +82,10 @@ RSpec.configure do |config|
   # Auth
   config.before :each do
     if defined?(request)
+      ENV['BUDGET_USER']                = 'test'
+      ENV['BUDGET_PASSWORD']            = 'testpassword'
       request.env['HTTP_AUTHORIZATION'] =
-          ActionController::HttpAuthentication::Basic.encode_credentials('YOUR_LOGIN', 'YOUR_PASSWORD')
+          ActionController::HttpAuthentication::Basic.encode_credentials('test', 'testpassword')
     end
   end
 end
