@@ -5,8 +5,8 @@ RSpec.describe IncomesController, type: :controller do
 
   describe '#index' do
     before :each do
-      @incomes = FactoryGirl.create_list(:item, 5, :income)
-      FactoryGirl.create :item # red herring - not an income
+      @incomes = FactoryBot.create_list(:item, 5, :income)
+      FactoryBot.create :item # red herring - not an income
     end
 
     it "should render a list of incomes" do
@@ -19,7 +19,7 @@ RSpec.describe IncomesController, type: :controller do
   end
 
   describe '#create' do
-    let(:income_params) { FactoryGirl.attributes_for :item }
+    let(:income_params) { FactoryBot.attributes_for :item }
 
     it "should create an income" do
       post :create, params: {item: income_params, format: 'json'}
@@ -38,14 +38,14 @@ RSpec.describe IncomesController, type: :controller do
   end
 
   describe '#update' do
-    let(:income) { FactoryGirl.create :item, :income }
-    let(:income_params) { FactoryGirl.attributes_for :item }
+    let(:income) { FactoryBot.create :item, :income }
+    let(:income_params) { FactoryBot.attributes_for :item }
 
     it "should find an income by ID" do
       patch :update, params: {id: 'not-found', item: income_params, format: 'json'}
       expect(response.status).to eql(404)
 
-      patch :update, params: {id: FactoryGirl.create(:item).to_param, item: income_params, format: 'json'}
+      patch :update, params: {id: FactoryBot.create(:item).to_param, item: income_params, format: 'json'}
       expect(response.status).to eql(404)
     end
 
@@ -65,13 +65,13 @@ RSpec.describe IncomesController, type: :controller do
   end
 
   describe '#destroy' do
-    let(:income) { FactoryGirl.create :item, :income }
+    let(:income) { FactoryBot.create :item, :income }
 
     it "should find an income by ID" do
       delete :destroy, params: {id: 'not-found', format: 'json'}
       expect(response.status).to eql(404)
 
-      delete :destroy, params: {id: FactoryGirl.create(:item).to_param, format: 'json'}
+      delete :destroy, params: {id: FactoryBot.create(:item).to_param, format: 'json'}
       expect(response.status).to eql(404)
     end
 

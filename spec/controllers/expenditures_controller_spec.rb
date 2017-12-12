@@ -5,8 +5,8 @@ RSpec.describe ExpendituresController, type: :controller do
 
   describe '#index' do
     before :each do
-      @expenditures = FactoryGirl.create_list(:item, 5)
-      FactoryGirl.create :item, :income # red herring - income
+      @expenditures = FactoryBot.create_list(:item, 5)
+      FactoryBot.create :item, :income # red herring - income
     end
 
     it "should render a list of expenditures" do
@@ -19,7 +19,7 @@ RSpec.describe ExpendituresController, type: :controller do
   end
 
   describe '#create' do
-    let(:expenditure_params) { FactoryGirl.attributes_for :item }
+    let(:expenditure_params) { FactoryBot.attributes_for :item }
 
     it "should create an expenditure" do
       post :create, params: {item: expenditure_params, format: 'json'}
@@ -38,14 +38,14 @@ RSpec.describe ExpendituresController, type: :controller do
   end
 
   describe '#update' do
-    let(:expenditure) { FactoryGirl.create :item }
-    let(:expenditure_params) { FactoryGirl.attributes_for :item }
+    let(:expenditure) { FactoryBot.create :item }
+    let(:expenditure_params) { FactoryBot.attributes_for :item }
 
     it "should find an expenditure by ID" do
       patch :update, params: {id: 'not-found', item: expenditure_params, format: 'json'}
       expect(response.status).to eql(404)
 
-      patch :update, params: {id: FactoryGirl.create(:item, :income).to_param, item: expenditure_params, format: 'json'}
+      patch :update, params: {id: FactoryBot.create(:item, :income).to_param, item: expenditure_params, format: 'json'}
       expect(response.status).to eql(404)
     end
 
@@ -65,13 +65,13 @@ RSpec.describe ExpendituresController, type: :controller do
   end
 
   describe '#destroy' do
-    let(:expenditure) { FactoryGirl.create :item }
+    let(:expenditure) { FactoryBot.create :item }
 
     it "should find an expenditure by ID" do
       delete :destroy, params: {id: 'not-found', format: 'json'}
       expect(response.status).to eql(404)
 
-      delete :destroy, params: {id: FactoryGirl.create(:item, :income).to_param, format: 'json'}
+      delete :destroy, params: {id: FactoryBot.create(:item, :income).to_param, format: 'json'}
       expect(response.status).to eql(404)
     end
 

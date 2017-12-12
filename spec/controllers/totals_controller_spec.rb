@@ -5,9 +5,9 @@ RSpec.describe TotalsController, type: :controller do
     render_views
 
     before :each do
-      FactoryGirl.create :item, :income, unit_amount: 10, quantity: 2, period_count: 1, period_unit: :day
-      FactoryGirl.create :item, unit_amount: 5, quantity: 2, period_count: 1, period_unit: :week, sales_tax: true
-      FactoryGirl.create :item, unit_amount: 3, quantity: 1, period_count: 1, period_unit: :month, sales_tax: false
+      FactoryBot.create :item, :income, unit_amount: 10, quantity: 2, period_count: 1, period_unit: :day
+      FactoryBot.create :item, unit_amount: 5, quantity: 2, period_count: 1, period_unit: :week, sales_tax: true
+      FactoryBot.create :item, unit_amount: 3, quantity: 1, period_count: 1, period_unit: :month, sales_tax: false
     end
 
     it 'should render JSON totals data' do
