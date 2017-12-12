@@ -19,7 +19,7 @@
 <script>
   import axios from 'axios'
   import numeral from 'numeral'
-  import {filters} from '../../helpers'
+  import {filters} from 'helpers'
   import IncomeForm from './IncomeForm.vue'
 
   export default {

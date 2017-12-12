@@ -4,7 +4,7 @@
         @submit.prevent="submit"
         id="new_income">
     <field name="item[category]" :errors="errors">
-      <template scope="props">
+      <template slot-scope="props">
         <label for="income_category">Category</label>
         <input type="text"
                :name="props.fieldname"
@@ -22,7 +22,7 @@
            required />
     <label for="income_name">Item</label>
     <field name="item[name]" :errors="errors">
-      <template scope="props">
+      <template slot-scope="props">
         <input type="text"
                :name="props.fieldname"
                :value="income.name"
@@ -35,7 +35,7 @@
     <label for="income_amount">Value</label>
     <fieldset>
       <field name="item[unit_amount]" :errors="errors">
-        <template scope="props">
+        <template slot-scope="props">
           $<input type="number"
                   :name="props.fieldname"
                   :value="income.unit_amount"
@@ -53,7 +53,7 @@
       <field name="item[period_count]"
              :errors="errors"
              :inline="true">
-        <template scope="props">
+        <template slot-scope="props">
           <input type="number"
                  :name="props.fieldname"
                  :value="income.period_count"
@@ -67,7 +67,7 @@
         </template>
       </field>
       <field name="item[period_unit]" :errors="errors" :inline="true">
-        <template scope="props">
+        <template slot-scope="props">
           <select :name="props.fieldname"
                   id="income_period"
                   required>
@@ -86,7 +86,7 @@
     </fieldset>
 
     <field name="item[notes]" :errors="errors">
-      <template scope="props">
+      <template slot-scope="props">
         <label for="income_notes">Notes</label>
         <textarea :name="props.fieldname"
                   :value="income.notes"
@@ -103,7 +103,7 @@
 
 <script>
   import axios from 'axios'
-  import Field from '../../components/Field.vue'
+  import Field from 'components/Field.vue'
 
   const singulars = ['day', 'week', 'month', 'year']
   const plurals = ['days', 'weeks', 'months', 'years']

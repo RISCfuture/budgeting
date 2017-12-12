@@ -5,36 +5,36 @@
     <table class="ledger">
       <thead>
       <tr>
-        <th>Source</th>
-        <th>Amount</th>
+        <th>Item</th>
+        <th>Cost</th>
         <th>Period</th>
         <th>Prorated</th>
         <th></th>
       </tr>
       </thead>
 
-      <template v-for="(incomes, category) in incomesByCategory">
+      <template v-for="(expenditures, category) in expendituresByCategory">
         <category :key="category"
                   :category="category"
-                  :incomes="incomes"
+                  :expenditures="expenditures"
                   @updated="reload"></category>
       </template>
 
       <tfoot>
       <tr v-if="addFormExpanded">
         <td colspan="5" class="add-form">
-          <income-form method="post"
-                       action="/incomes.json"
-                       ref="form"
-                       @submitted="added"
-                       @cancel="toggleAddForm" />
+          <expenditure-form method="post"
+                            action="/expenditures.json"
+                            ref="form"
+                            @submitted="added"
+                            @cancel="toggleAddForm" />
         </td>
       </tr>
       <tr v-else>
-        <td colspan="5" class="add-form">
+        <td colspan="6" class="add-form">
           <a @click="toggleAddForm">
             <img :src="AddIcon" alt="(+)" />
-            Add Income
+            Add Expenditure
           </a>
         </td>
       </tr>
@@ -47,11 +47,8 @@
   import {mapGetters, mapActions} from 'vuex'
   import {helpers} from '../../helpers'
   import Category from './Category.vue'
-  import IncomeForm from './IncomeForm.vue'
-  import AddIcon from '../../../../assets/images/add.svg'
-
-  const singulars = ['day', 'week', 'month', 'year']
-  const plurals = ['days', 'weeks', 'months', 'years']
+  import ExpenditureForm from './ExpenditureForm.vue'
+  import AddIcon from 'images/add.svg'
 
   export default {
     data() {
@@ -60,10 +57,10 @@
         addFormExpanded: false
       }
     },
-    components: {Category, IncomeForm},
-    computed: mapGetters(['incomesByCategory']),
+    components: {Category, ExpenditureForm},
+    computed: mapGetters(['expendituresByCategory']),
     methods: {
-      ...mapActions(['loadIncomes']),
+      ...mapActions(['loadExpenditures']),
 
       toggleAddForm() {
         if (this.addFormExpanded) this.$refs.form.reset()
@@ -75,9 +72,9 @@
         this.toggleAddForm()
       },
 
-      reload() { this.loadIncomes(true) }
+      reload() { this.loadExpenditures(true) }
     },
-    mounted() { this.loadIncomes() }
+    mounted() { this.loadExpenditures() }
   }
 </script>
 

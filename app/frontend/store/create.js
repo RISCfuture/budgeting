@@ -1,5 +1,5 @@
 import Vuex from 'vuex'
-import createLogger from 'vuex/src/plugins/logger'
+import createLogger from 'vuex/dist/logger'
 
 const debug = process.env.NODE_ENV !== 'production'
 

@@ -4,7 +4,7 @@
         @submit.prevent="submit"
         id="new_expenditure">
     <field name="item[category]" :errors="errors">
-      <template scope="props">
+      <template slot-scope="props">
         <label for="expenditure_category">Category</label>
         <input type="text"
                :name="props.fieldname"
@@ -18,7 +18,7 @@
     <label for="expenditure_name">Item</label>
     <fieldset>
       <field name="item[quantity]" :errors="errors" :inline="true">
-        <template scope="props">
+        <template slot-scope="props">
           <input type="number"
                  :name="props.fieldname"
                  :value="expenditure.quantity"
@@ -30,7 +30,7 @@
       </field>
       &times; &nbsp;
       <field name="item[name]" :errors="errors" :inline="true">
-        <template scope="props">
+        <template slot-scope="props">
           <input type="text"
                  :name="props.fieldname"
                  :value="expenditure.name"
@@ -46,7 +46,7 @@
         <label for="expenditure_amount">Cost</label>
         <fieldset>
           <field name="item[unit_amount]" :errors="errors">
-            <template scope="props">
+            <template slot-scope="props">
               $<input type="number"
                       :name="props.fieldname"
                       :value="expenditure.unit_amount"
@@ -66,7 +66,7 @@
           <field name="item[period_count]"
                  :errors="errors"
                  :inline="true">
-            <template scope="props">
+            <template slot-scope="props">
               <input type="number"
                      :name="props.fieldname"
                      :value="expenditure.period_count"
@@ -80,7 +80,7 @@
             </template>
           </field>
           <field name="item[period_unit]" :errors="errors" :inline="true">
-            <template scope="props">
+            <template slot-scope="props">
               <select :name="props.fieldname"
                       id="expenditure_period"
                       required>
@@ -123,7 +123,7 @@
     </label>
 
     <field name="item[notes]" :errors="errors">
-      <template scope="props">
+      <template slot-scope="props">
         <label for="expenditure_notes">Notes</label>
         <textarea :name="props.fieldname"
                   :value="expenditure.notes"
@@ -140,7 +140,7 @@
 
 <script>
   import axios from 'axios'
-  import Field from '../../components/Field.vue'
+  import Field from 'components/Field.vue'
 
   const singulars = ['day', 'week', 'month', 'year']
   const plurals = ['days', 'weeks', 'months', 'years']

@@ -9,20 +9,20 @@
 
 import Vue from 'vue'
 
-import store from './store/index'
+import store from 'store/index'
 
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
-import routes from './routes'
+import routes from 'routes'
 
-import Navbar from './components/Navbar.vue'
+import Navbar from 'components/Navbar.vue'
 Vue.component('navbar', Navbar)
 
 import 'normalize.css'
 import 'tippy.js/dist/tippy.css'
-import '../../assets/stylesheets/fonts.css'
-import '../../assets/stylesheets/common.sass'
-import '../../assets/stylesheets/ledger.sass'
+import 'stylesheets/fonts.css'
+import 'stylesheets/common.sass'
+import 'stylesheets/ledger.sass'
 
 // add interceptor to add CSRF tokens to request
 import axios from 'axios'

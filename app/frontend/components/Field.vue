@@ -14,7 +14,7 @@
 <script>
   import _ from 'lodash'
   import tippy from 'tippy.js'
-  import AlertIcon from '../../../assets/images/alert.svg'
+  import AlertIcon from 'images/alert.svg'
 
   export default {
     data() {
