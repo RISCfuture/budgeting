@@ -1,0 +1,11 @@
+language: ruby
+rvm:
+- 2.5.0
+postgres:
+  adapter: postgresql
+  database: budgeting_test
+  username: budgeting
+before_script:
+- createuser budgeting
+- createdb -O budgeting budgeting_test
+- "bundle exec rake db:migrate"
