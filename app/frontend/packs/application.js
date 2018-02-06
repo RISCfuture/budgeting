@@ -12,17 +12,9 @@ import Vue from 'vue'
 import store from 'store/index'
 
 import VueRouter from 'vue-router'
-Vue.use(VueRouter)
 import routes from 'routes'
-
-import Navbar from 'components/Navbar.vue'
-Vue.component('navbar', Navbar)
-
-import 'normalize.css'
-import 'tippy.js/dist/tippy.css'
-import 'stylesheets/fonts.css'
-import 'stylesheets/common.sass'
-import 'stylesheets/ledger.sass'
+Vue.use(VueRouter)
+const router = new VueRouter({routes, mode: 'history'})
 
 // add interceptor to add CSRF tokens to request
 import axios from 'axios'
@@ -36,13 +28,22 @@ axios.interceptors.request.use(function (config) {
   }
 
   return config
-});
+})
 
+import Navbar from 'components/Navbar.vue'
+Vue.component('navbar', Navbar)
+
+import Layout from 'views/layout.vue'
 
 document.addEventListener('DOMContentLoaded', () => {
   new Vue({
-            el: '#app',
-            router: new VueRouter({routes, mode: 'history'}),
-            store
-          })
+    render: create => create(Layout),
+    router, store
+  }).$mount('#app')
 })
+
+import 'normalize.css'
+import 'tippy.js/dist/tippy.css'
+import 'stylesheets/fonts.css'
+import 'stylesheets/common.sass'
+import 'stylesheets/ledger.sass'
