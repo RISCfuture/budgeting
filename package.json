@@ -6,6 +6,8 @@
     "autoprefixer": "^7.1.1",
     "axios": "^0.16.2",
     "babel-preset-minify": "^0.2.0",
+    "bugsnag-js": "^4.4.0",
+    "bugsnag-vue": "^1.0.1",
     "coffeescript": "1.12.7",
     "lodash": "^4.17.4",
     "normalize.css": "^7.0.0",

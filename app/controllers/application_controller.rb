@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :login_required
+  before_bugsnag_notify :add_user_info_to_bugsnag
 
   rescue_from(ActiveRecord::RecordNotFound) do |error|
     respond_to do |format|
@@ -47,5 +48,13 @@ class ApplicationController < ActionController::Base
     else
       request_http_basic_authentication
     end
+  end
+
+  private
+
+  def add_user_info_to_bugsnag(report)
+    report.user = {
+        id: session[:logged_in]
+    }
   end
 end

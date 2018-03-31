@@ -25,6 +25,9 @@ gem 'slim-rails'
 gem 'webpacker'
 gem 'autoprefixer-rails'
 
+# ERROR TRACKING
+gem 'bugsnag'
+
 group :development do
   # ERRORS
   gem 'better_errors'
