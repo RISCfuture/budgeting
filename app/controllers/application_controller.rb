@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery with: :exception
   before_action :login_required
   before_bugsnag_notify :add_user_info_to_bugsnag
 
