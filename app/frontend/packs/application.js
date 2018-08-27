@@ -11,11 +11,13 @@ import Vue from 'vue'
 
 import {RAILS_ENV, BUGSNAG_API_KEY} from 'config/constants.js.erb'
 import bugsnag from 'bugsnag-js'
-const BugsnagClient = bugsnag(BUGSNAG_API_KEY)
 import bugsnagVue from 'bugsnag-vue'
-bugsnag.releaseStage = RAILS_ENV
-bugsnag.notifyReleaseStages = ['production']
-BugsnagClient.use(bugsnagVue(Vue))
+if (BUGSNAG_API_KEY) {
+  const BugsnagClient = bugsnag(BUGSNAG_API_KEY)
+  bugsnag.releaseStage = RAILS_ENV
+  bugsnag.notifyReleaseStages = ['production']
+  BugsnagClient.use(bugsnagVue(Vue))
+}
 
 import store from 'store/index'
 
