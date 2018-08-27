@@ -12,14 +12,14 @@ FactoryBot.define do
     period_unit { Item.period_units.keys.sample }
     period_count { rand(4)+1 }
 
-    income false
+    income { false }
     budget { FFaker::Boolean.maybe }
     sales_tax { FFaker::Boolean.maybe }
 
     trait :income do
-      income true
-      budget false
-      sales_tax false
+      income { true }
+      budget { false }
+      sales_tax { false }
     end
   end
 end
