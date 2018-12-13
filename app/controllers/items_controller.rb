@@ -46,7 +46,7 @@ class ItemsController < ApplicationController
   class Responder < ApplicationController::Responder
     protected
 
-    def display(resource)
+    def display(_resource)
       controller.render "items/#{controller.action_name}"
     end
 

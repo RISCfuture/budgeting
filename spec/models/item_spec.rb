@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Item, type: :model do
-
   describe '#amount' do
     let(:item) { FactoryBot.build :item, unit_amount: 5, quantity: 2, period_unit: :month, period_count: 2, sales_tax: true }
 

@@ -2,7 +2,7 @@
 
 ActiveSupport::Reloader.to_prepare do
   ApplicationController.renderer.defaults.merge!(
-      http_host: 'tbm-budget.herokuapp.com',
-      https:     true
+    http_host: 'tbm-budget.herokuapp.com',
+    https:     true
   )
 end

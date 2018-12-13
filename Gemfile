@@ -7,9 +7,9 @@ git_source(:github) do |repo_name|
 end
 
 # FRAMEWORK
-gem 'rails', '5.2.2'
-gem 'puma'
 gem 'bootsnap'
+gem 'puma'
+gem 'rails', '5.2.2'
 
 # MODELS
 gem 'pg', '< 1.0'
@@ -21,10 +21,10 @@ gem 'responders'
 gem 'jbuilder'
 
 # ASSETS
+gem 'autoprefixer-rails'
 gem 'sass-rails'
 gem 'slim-rails'
 gem 'webpacker'
-gem 'autoprefixer-rails'
 
 # ERROR TRACKING
 gem 'bugsnag'
@@ -39,22 +39,22 @@ group :development do
 end
 
 group :doc do
-  gem 'yard'
   gem 'redcarpet'
+  gem 'yard'
 end
 
 group :test do
   # SPECS
-  gem 'rspec-rails'
   gem 'rails-controller-testing'
+  gem 'rspec-rails'
 
   # FACTORIES
   gem 'factory_bot_rails'
   gem 'ffaker'
 
   # ENVIRONMENT
-  gem 'webmock'
   gem 'database_cleaner'
-  gem 'timecop'
   gem 'fakefs', require: 'fakefs/safe'
+  gem 'timecop'
+  gem 'webmock'
 end

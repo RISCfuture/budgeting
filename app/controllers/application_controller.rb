@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
     end
 
     def api_behavior
-      raise ActionController::MissingRenderer.new(format) unless has_renderer?
+      raise ActionController::MissingRenderer, format unless has_renderer?
 
       if patch? || put?
         has_errors? ? display_errors : display(resource)
@@ -27,9 +27,7 @@ class ApplicationController < ActionController::Base
     end
 
     def default_render
-      if post? && format == :json
-        controller.response.status = :created
-      end
+      controller.response.status = :created if post? && format == :json
       super
     end
   end
@@ -39,9 +37,9 @@ class ApplicationController < ActionController::Base
   protected
 
   def login_required
-    if session[:logged_in]
-      return true
-    elsif authenticate_with_http_basic { |l, p| l == ENV['BUDGET_USER'] && p == ENV['BUDGET_PASSWORD'] }
+    return true if session[:logged_in]
+
+    if authenticate_with_http_basic { |l, p| l == ENV['BUDGET_USER'] && p == ENV['BUDGET_PASSWORD'] }
       session[:logged_in] = true
       return true
     else

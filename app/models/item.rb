@@ -94,10 +94,10 @@ class Item < ApplicationRecord
         case interval
           when :daily, :weekly, :biweekly
             to_days = case interval
-                         when :daily then 1
-                         when :weekly then 7
-                         when :biweekly then 14
-                       end
+                        when :daily then 1
+                        when :weekly then 7
+                        when :biweekly then 14
+                      end
 
             to_days/(from_quantity*from_days)
           when :monthly
@@ -147,7 +147,7 @@ class Item < ApplicationRecord
           when :weekly, :biweekly
             period_start, period_end = proration_period(period, date)
             weeks = (period_end.year - period_start.year)*52.0
-            divisions = weeks/(interval == :weekly ? 1 : 2)
+            divisions = weeks/((interval == :weekly) ? 1 : 2)
             1/divisions
           when :monthly, :quarterly, :annually
             multiplier = case interval
@@ -165,6 +165,18 @@ class Item < ApplicationRecord
     end
   end
 
+  # @private
+  def self.proration_period(period, date)
+    leap = period.parts.each_with_object({}) { |(k, v), h| h[k] = v } # duplicate the hash and remove the default of 0 as that screws up `advance`
+    start_date = REFERENCE_DATE
+    prev_date  = REFERENCE_DATE
+    until start_date > date
+      prev_date  = start_date
+      start_date = start_date.advance(leap)
+    end
+    return [prev_date.to_date, start_date.to_date]
+  end
+
   private
 
   def period
@@ -173,16 +185,5 @@ class Item < ApplicationRecord
 
   def proration_factor(interval, date: Date.current)
     self.class.proration_factor period, interval, date: date
-  end
-
-  def self.proration_period(period, date)
-    leap = period.parts.inject({}) { |h, (k, v)| h[k] = v; h } # duplicate the hash and remove the default of 0 as that screws up `advance`
-    start_date = REFERENCE_DATE
-    prev_date  = REFERENCE_DATE
-    until start_date > date
-      prev_date  = start_date
-      start_date = start_date.advance(leap)
-    end
-    return [prev_date.to_date, start_date.to_date]
   end
 end
