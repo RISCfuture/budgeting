@@ -2,7 +2,7 @@
   "name": "budgeting",
   "private": true,
   "dependencies": {
-    "@rails/webpacker": "3.5",
+    "@rails/webpacker": "^4.0.1",
     "autoprefixer": "^7.1.1",
     "axios": "^0.16.2",
     "babel-preset-minify": "^0.2.0",
@@ -12,16 +12,17 @@
     "lodash": "^4.17.4",
     "normalize.css": "^7.0.0",
     "numeral": "^2.0.6",
+    "postcss-cssnext": "^3.1.0",
     "precss": "^1.4.0",
-    "rails-erb-loader": "^5.5.0",
+    "rails-erb-loader": "^5.5.2",
     "tippy.js": "^1.0.1",
-    "vue": "^2.5.21",
-    "vue-loader": "14.2.2",
+    "vue": "^2.6.8",
+    "vue-loader": "^15.7.0",
     "vue-router": "^2.6.0",
-    "vue-template-compiler": "^2.5.21",
+    "vue-template-compiler": "^2.6.8",
     "vuex": "^2.3.1"
   },
   "devDependencies": {
-    "webpack-dev-server": "2.11.2"
+    "webpack-dev-server": "^3.2.1"
   }
 }
