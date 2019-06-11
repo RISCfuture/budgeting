@@ -9,31 +9,34 @@
   <template v-if="expanded" v-for="expenditure in expenditures">
     <expenditure :key="expenditure.id"
                  :expenditure="expenditure"
-                 @updated="updated" />
+                 @updated="expenditureUpdated" />
   </template>
 
   </tbody>
 </template>
 
-<script>
-  import Expenditure from './Expenditure.vue'
+<script lang="ts">
+  import Vue from 'vue'
+  import Component from 'vue-class-component'
+  import {Prop} from 'vue-property-decorator'
 
-  export default {
-    components: {Expenditure},
-    props: ['category', 'expenditures'],
-    data() {
-      return {
-        expanded: true
-      }
-    },
-    computed: {
-      triangle() {
-        return this.expanded ? '&dtrif;' : '&rtrif;'
-      }
-    },
-    methods: {
-      toggle() { this.expanded = !this.expanded },
-      updated() { this.$emit('updated') }
+  import Expenditure from './Expenditure'
+
+  @Component({
+    components: {Expenditure}
+  })
+  export default class Category extends Vue {
+    @Prop({type: String, required: true}) category: string
+    @Prop({type: Array, required: true}) expenditures: Expenditure[]
+
+    expanded = true
+
+    get triangle(): string {
+      return this.expanded ? '&dtrif;' : '&rtrif;'
     }
+
+    toggle() { this.expanded = !this.expanded }
+
+    expenditureUpdated() { this.$emit('updated') }
   }
 </script>

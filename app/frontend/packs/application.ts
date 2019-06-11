@@ -10,16 +10,19 @@
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 
+import Secrets from 'config/secrets.js'
+
 import Vue from 'vue'
 
-import {RAILS_ENV, BUGSNAG_API_KEY} from 'config/constants.js.erb'
-import bugsnag from 'bugsnag-js'
-import bugsnagVue from 'bugsnag-vue'
-if (BUGSNAG_API_KEY) {
-  const BugsnagClient = bugsnag(BUGSNAG_API_KEY)
-  bugsnag.releaseStage = RAILS_ENV
-  bugsnag.notifyReleaseStages = ['production']
-  BugsnagClient.use(bugsnagVue(Vue))
+import bugsnag from '@bugsnag/js'
+import bugsnagVue from '@bugsnag/plugin-vue'
+if (process.env.RAILS_ENV === 'production') {
+  const bugsnagClient = bugsnag({
+    apiKey: Secrets.bugsnagAPIKey,
+    releaseStage: process.env.RAILS_ENV,
+    notifyReleaseStages: ['production']
+  })
+  bugsnagClient.use(bugsnagVue, Vue)
 }
 
 import store from 'store/index'
@@ -30,8 +33,8 @@ Vue.use(VueRouter)
 const router = new VueRouter({routes, mode: 'history'})
 
 // add interceptor to add CSRF tokens to request
-import axios from 'axios'
-axios.interceptors.request.use(function (config) {
+import Axios from 'axios'
+Axios.interceptors.request.use(config => {
   if (config.method !== 'get') {
     let tokenName = document.querySelector('meta[name=csrf-param]').getAttribute('content')
     let tokenValue = document.querySelector('meta[name=csrf-token]').getAttribute('content')
@@ -43,10 +46,10 @@ axios.interceptors.request.use(function (config) {
   return config
 })
 
-import Navbar from 'components/Navbar.vue'
+import Navbar from 'components/Navbar'
 Vue.component('navbar', Navbar)
 
-import Layout from 'views/layout.vue'
+import Layout from 'views/Layout'
 
 document.addEventListener('DOMContentLoaded', () => {
   new Vue({
@@ -56,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 import 'normalize.css'
-import 'tippy.js/dist/tippy.css'
 import 'stylesheets/fonts.css'
 import 'stylesheets/common.sass'
 import 'stylesheets/ledger.sass'

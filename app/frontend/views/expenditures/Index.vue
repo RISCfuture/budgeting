@@ -23,9 +23,7 @@
       <tfoot>
       <tr v-if="addFormExpanded">
         <td colspan="5" class="add-form">
-          <expenditure-form method="post"
-                            action="/expenditures.json"
-                            ref="form"
+          <expenditure-form ref="form"
                             @submitted="added"
                             @cancel="toggleAddForm" />
         </td>
@@ -33,7 +31,7 @@
       <tr v-else>
         <td colspan="6" class="add-form">
           <a @click="toggleAddForm">
-            <img :src="AddIcon" alt="(+)" />
+            <img :src="addIconURL" alt="(+)" />
             Add Expenditure
           </a>
         </td>
@@ -43,38 +41,44 @@
   </div>
 </template>
 
-<script>
-  import {mapGetters, mapActions} from 'vuex'
-  import {helpers} from '../../helpers'
-  import Category from './Category.vue'
-  import ExpenditureForm from './ExpenditureForm.vue'
+<script lang="ts">
+  import Vue from 'vue'
+  import Component from 'vue-class-component'
+  import {Action, Getter} from 'vuex-class'
+
+  import {Expenditure} from 'types'
+  import Category from './Category'
+  import ExpenditureForm from './ExpenditureForm'
   import AddIcon from 'images/add.svg'
 
-  export default {
-    data() {
-      return {
-        AddIcon,
-        addFormExpanded: false
-      }
-    },
-    components: {Category, ExpenditureForm},
-    computed: mapGetters(['expendituresByCategory']),
-    methods: {
-      ...mapActions(['loadExpenditures']),
+  @Component({
+    components: {Category, ExpenditureForm}
+  })
+  export default class Index extends Vue {
+    $refs!: {
+      form: ExpenditureForm
+    }
 
-      toggleAddForm() {
-        if (this.addFormExpanded) this.$refs.form.reset()
-        this.addFormExpanded = !this.addFormExpanded
-      },
+    addIconURL = AddIcon
+    addFormExpanded = false
 
-      added() {
-        this.reload()
-        this.toggleAddForm()
-      },
+    @Getter expendituresByCategory: {[category: string]: Expenditure[]}
 
-      reload() { this.loadExpenditures(true) }
-    },
-    mounted() { this.loadExpenditures() }
+    @Action loadExpenditures: (force: boolean) => Promise<boolean>
+
+    toggleAddForm() {
+      if (this.addFormExpanded) this.$refs.form.reset()
+      this.addFormExpanded = !this.addFormExpanded
+    }
+
+    added() {
+      this.reload()
+      this.toggleAddForm()
+    }
+
+    reload() { this.loadExpenditures(true) }
+
+    mounted() { this.loadExpenditures(true) }
   }
 </script>
 

@@ -23,9 +23,7 @@
       <tfoot>
       <tr v-if="addFormExpanded">
         <td colspan="5" class="add-form">
-          <income-form method="post"
-                       action="/incomes.json"
-                       ref="form"
+          <income-form ref="form"
                        @submitted="added"
                        @cancel="toggleAddForm" />
         </td>
@@ -33,7 +31,7 @@
       <tr v-else>
         <td colspan="5" class="add-form">
           <a @click="toggleAddForm">
-            <img :src="AddIcon" alt="(+)" />
+            <img :src="addIconURL" alt="(+)" />
             Add Income
           </a>
         </td>
@@ -43,41 +41,44 @@
   </div>
 </template>
 
-<script>
-  import {mapGetters, mapActions} from 'vuex'
-  import {helpers} from '../../helpers'
-  import Category from './Category.vue'
-  import IncomeForm from './IncomeForm.vue'
+<script lang="ts">
+  import Vue from 'vue'
+  import Component from 'vue-class-component'
+  import {Action, Getter} from 'vuex-class'
+
+  import {Income} from 'types'
+  import Category from './Category'
+  import IncomeForm from './IncomeForm'
   import AddIcon from 'images/add.svg'
 
-  const singulars = ['day', 'week', 'month', 'year']
-  const plurals = ['days', 'weeks', 'months', 'years']
+  @Component({
+    components: {Category, IncomeForm}
+  })
+  export default class Index extends Vue {
+    $refs!: {
+      form: IncomeForm
+    }
 
-  export default {
-    data() {
-      return {
-        AddIcon,
-        addFormExpanded: false
-      }
-    },
-    components: {Category, IncomeForm},
-    computed: mapGetters(['incomesByCategory']),
-    methods: {
-      ...mapActions(['loadIncomes']),
+    addIconURL = AddIcon
+    addFormExpanded = false
 
-      toggleAddForm() {
-        if (this.addFormExpanded) this.$refs.form.reset()
-        this.addFormExpanded = !this.addFormExpanded
-      },
+    @Getter incomesByCategory: {[category: string]: Income[]}
 
-      added() {
-        this.reload()
-        this.toggleAddForm()
-      },
+    @Action loadIncomes: (force: boolean) => Promise<boolean>
 
-      reload() { this.loadIncomes(true) }
-    },
-    mounted() { this.loadIncomes() }
+    toggleAddForm() {
+      if (this.addFormExpanded) this.$refs.form.reset()
+      this.addFormExpanded = !this.addFormExpanded
+    }
+
+    added() {
+      this.reload()
+      this.toggleAddForm()
+    }
+
+    reload() { this.loadIncomes(true) }
+
+    mounted() { this.loadIncomes(true) }
   }
 </script>
 

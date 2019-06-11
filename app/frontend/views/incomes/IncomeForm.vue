@@ -8,7 +8,7 @@
         <label for="income_category">Category</label>
         <input type="text"
                :name="props.fieldname"
-               :value="income.category"
+               v-model="scratchIncome.category"
                id="income_category"
                maxlength="126"
                required />
@@ -17,7 +17,7 @@
 
     <input type="hidden"
            name="income[quantity]"
-           :value="income.quantity"
+           v-model="scratchIncome.quantity"
            min="1"
            required />
     <label for="income_name">Item</label>
@@ -25,7 +25,7 @@
       <template slot-scope="props">
         <input type="text"
                :name="props.fieldname"
-               :value="income.name"
+               v-model="scratchIncome.name"
                id="income_name"
                maxlength="126"
                required />
@@ -38,7 +38,7 @@
         <template slot-scope="props">
           $<input type="number"
                   :name="props.fieldname"
-                  :value="income.unit_amount"
+                  v-model="scratchIncome.unit_amount"
                   min="0.01"
                   step="0.01"
                   required
@@ -56,29 +56,22 @@
         <template slot-scope="props">
           <input type="number"
                  :name="props.fieldname"
-                 :value="income.period_count"
+                 v-model="scratchIncome.period_count"
                  min="1"
                  step="1"
                  required
                  class="small"
-                 id="income_period_count"
-                 @keyup="updatePeriods"
-                 @change="updatePeriods" />
+                 ref="incomePeriodCount" />
         </template>
       </field>
       <field name="item[period_unit]" :errors="errors" :inline="true">
         <template slot-scope="props">
           <select :name="props.fieldname"
                   id="income_period"
+                  ref="incomePeriod"
                   required>
-            <option value="day" :selected="income.period_unit == 'day'">day
-            </option>
-            <option value="week" :selected="income.period_unit == 'week'">week
-            </option>
-            <option value="month" :selected="income.period_unit == 'month'">
-              month
-            </option>
-            <option value="year" :selected="income.period_unit == 'year'">year
+            <option v-for="(period, index) in periods" :value="period" :selected="scratchIncome.period_unit === period">
+              {{periodNames[index]}}
             </option>
           </select>
         </template>
@@ -89,7 +82,7 @@
       <template slot-scope="props">
         <label for="income_notes">Notes</label>
         <textarea :name="props.fieldname"
-                  :value="income.notes"
+                  v-model="scratchIncome.notes"
                   id="income_notes" />
       </template>
     </field>
@@ -101,72 +94,101 @@
   </form>
 </template>
 
-<script>
-  import axios from 'axios'
-  import Field from 'components/Field.vue'
+<script lang="ts">
+  import Vue from 'vue'
+  import Component from 'vue-class-component'
+  import {Prop} from 'vue-property-decorator'
+  import * as _ from 'lodash'
+  import Axios from 'axios'
+
+  import {Errors, Income, Period} from 'types'
+  import Field from 'components/Field'
+
+  interface ScratchIncome {
+    category?: string
+    quantity: number
+    name?: string
+    unit_amount?: number
+    period_count: number
+    period_unit: Period
+    budget?: boolean
+    sales_tax?: boolean
+    notes?: string
+  }
+
+  const defaultIncome: ScratchIncome = {
+    quantity: 1,
+    period_count: 1,
+    period_unit: 'day'
+  }
 
   const singulars = ['day', 'week', 'month', 'year']
   const plurals = ['days', 'weeks', 'months', 'years']
 
-  export default {
-    props: {
-      method: {type: String, required: true},
-      action: {type: String, required: true},
-      income: {
-        default() {
-          return {
-            quantity: 1,
-            period_count: 1,
-            period: 'day'
-          }
+  @Component({
+    components: {Field}
+  })
+  export default class IncomeForm extends Vue {
+    $el!: HTMLFormElement
+    $refs!: {
+      incomePeriodCount: HTMLInputElement
+      incomePeriod: HTMLSelectElement
+    }
+
+    @Prop({type: Object, required: false}) income?: Income
+
+    scratchIncome: ScratchIncome = defaultIncome
+    errors: Errors = {}
+
+    private get pluralizePeriods(): boolean { return Number(this.$refs.incomePeriodCount.value) !== 1 }
+
+    get periods(): string[] { return singulars }
+    get periodNames(): string[] { return this.pluralizePeriods ? plurals : singulars }
+
+    get method(): string {
+      if (_.isNil(this.income)) return 'post'
+      else return 'patch'
+    }
+    get action(): string {
+      if (_.isNil(this.income))
+        return `/incomes.json`
+      else
+        return `/incomes/${this.income.id}.json`
+    }
+
+    submit() {
+      let data = new FormData(this.$el)
+      Axios[this.method](this.action, data).then(() => {
+        this.$emit('submitted')
+      }).catch(error => {
+        if (error.response && error.response.status === 422) {
+          this.errors = error.response.data.errors
         }
-      }
-    },
-    data() {
-      return {
-        errors: {}
-      }
-    },
-    components: {Field},
-    methods: {
-      submit() {
-        let data = new FormData(this.$el)
-        axios[this.method](this.action, data).then(() => {
-          this.$emit('submitted')
-        }).catch((error) => {
-          if (error.response && error.response.status === 422) {
-            this.errors = error.response.data.errors
-          }
-          else alert(error) //TODO
-        })
-      },
+        else alert(error) //TODO
+      })
+    }
 
-      cancel() { this.$emit('cancel') },
+    cancel() { this.$emit('cancel') }
 
-      reset() {
-        this.$el.querySelectorAll('input:not([type=submit]), select, textarea')
-            .forEach((element) => {
-              if (element.getAttribute('name') === 'item[quantity]' ||
-                  element.getAttribute('name') === 'item[period_count]')
-                element.value = '1'
-              else if (element.getAttribute('name') === 'item[period]')
-                element.options[0].selected = true
-              else element.value = ''
-            })
-        this.$emit('reset')
-      },
-
-      updatePeriods() {
-        let field = this.$el.querySelector('#income_period_count')
-        let count = Number.parseInt(field.value)
-        let strings = count === 1 ? singulars : plurals
-        Array.from(this.$el.querySelector('#income_period').options)
-             .forEach((item, index) => {
-               item.textContent = strings[index]
-             })
+    reset() {
+      if (_.isNil(this.income))
+        this.scratchIncome = _.clone(defaultIncome)
+      else {
+        this.scratchIncome = _.pick(this.income, [
+          'category',
+          'quantity',
+          'name',
+          'unit_amount',
+          'period_count',
+          'period_unit',
+          'budget',
+          'sales_tax',
+          'notes'
+        ]) as ScratchIncome
       }
-    },
-    mounted() { this.updatePeriods() }
+    }
+
+    mounted() { this.reset() }
   }
 </script>
 

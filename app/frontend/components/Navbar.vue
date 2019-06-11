@@ -8,12 +8,16 @@
   </nav>
 </template>
 
-<script>
-  import NavbarItem from './NavbarItem.vue'
+<script lang="ts">
+  import Vue from 'vue'
+  import Component from 'vue-class-component'
 
-  export default {
+  import NavbarItem from './NavbarItem'
+
+  @Component({
     components: {NavbarItem}
-  }
+  })
+  export default class Navbar extends Vue {}
 </script>
 
 <style lang="scss">

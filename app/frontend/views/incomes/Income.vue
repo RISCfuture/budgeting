@@ -1,11 +1,9 @@
 <template>
   <tr class="income">
     <td v-if="editFormShown" colspan="5">
-      <income-form method="patch"
-                        :action="editURL"
-                        :income="income"
-                        @submitted="finishEdit"
-                        @cancel="cancelEdit" />
+      <income-form :income="income"
+                   @submitted="finishEdit"
+                   @cancel="cancelEdit" />
     </td>
     <th v-if="!editFormShown">{{income.name}}</th>
     <td v-if="!editFormShown">{{income.unit_amount | formatMoney}}</td>
@@ -16,38 +14,39 @@
   </tr>
 </template>
 
-<script>
-  import axios from 'axios'
-  import numeral from 'numeral'
-  import {filters} from 'helpers'
-  import IncomeForm from './IncomeForm.vue'
+<script lang="ts">
+  import Component, {mixins} from 'vue-class-component'
+  import {Prop} from 'vue-property-decorator'
+  import {Action} from 'vuex-class'
 
-  export default {
-    props: ['income'],
-    components: {IncomeForm},
-    data() {
-      return {
-        editFormShown: false
-      }
-    },
-    computed: {
-      editURL() { return `/incomes/${this.income.id}.json` }
-    },
-    methods: {
-      edit() { this.editFormShown = true },
-      finishEdit() {
-        this.editFormShown = false
-        this.$emit('updated')
-      },
-      cancelEdit() { this.editFormShown = false },
-      destroy() {
-        axios.delete(this.editURL).then(() => this.$emit('updated'))
-             .catch((error) => {
-               alert(error) //TODO
-             })
-      },
-    },
-    filters
+  import * as Types from 'types'
+  import IncomeForm from './IncomeForm'
+  import MoneyFormatting from 'mixins/MoneyFormatting'
+
+  @Component({
+    components: {IncomeForm}
+  })
+  export default class Income extends mixins(MoneyFormatting) {
+    @Prop({type: Object, required: true}) income: Types.Income
+
+    editFormShown = false
+
+    @Action deleteIncome: (params: {income: Types.Income}) => Promise<void>
+
+    edit() { this.editFormShown = true }
+
+    finishEdit() {
+      this.editFormShown = false
+      this.$emit('updated')
+    }
+
+    cancelEdit() { this.editFormShown = false }
+
+    destroy() {
+      this.deleteIncome({income: this.income})
+          .then(() => this.$emit('updated'))
+          .catch(error => alert(error)) //TODO
+    }
   }
 </script>
 

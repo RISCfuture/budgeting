@@ -11,8 +11,14 @@
   </li>
 </template>
 
-<script>
-  export default {
-    props: ['name', 'href']
+<script lang="ts">
+  import Vue from 'vue'
+  import Component from 'vue-class-component'
+  import {Prop} from 'vue-property-decorator'
+
+  @Component
+  export default class NavbarItem extends Vue {
+    @Prop({type: String, required: true}) name: string
+    @Prop({type: String, required: true}) href: string
   }
 </script>

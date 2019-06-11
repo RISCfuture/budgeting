@@ -1,9 +1,7 @@
 <template>
   <tr :class="rowClass">
     <td v-if="editFormShown" colspan="5">
-      <expenditure-form method="patch"
-                        :action="editURL"
-                        :expenditure="expenditure"
+      <expenditure-form :expenditure="expenditure"
                         @submitted="finishEdit"
                         @cancel="cancelEdit" />
     </td>
@@ -16,41 +14,43 @@
   </tr>
 </template>
 
-<script>
-  import axios from 'axios'
-  import numeral from 'numeral'
-  import {filters} from '../../helpers'
-  import ExpenditureForm from './ExpenditureForm.vue'
+<script lang="ts">
+  import Component, {mixins} from 'vue-class-component'
+  import {Prop} from 'vue-property-decorator'
+  import {Action} from 'vuex-class'
 
-  export default {
-    props: ['expenditure'],
-    components: {ExpenditureForm},
-    data() {
-      return {
-        editFormShown: false
-      }
-    },
-    computed: {
-      rowClass() {
-        return this.expenditure.budget ? 'budget' : null
-      },
-      editURL() { return `/expenditures/${this.expenditure.id}.json` }
-    },
-    methods: {
-      edit() { this.editFormShown = true },
-      finishEdit() {
-        this.editFormShown = false
-        this.$emit('updated')
-      },
-      cancelEdit() { this.editFormShown = false },
-      destroy() {
-        axios.delete(this.editURL).then(() => this.$emit('updated'))
-             .catch((error) => {
-               alert(error) //TODO
-             })
-      },
-    },
-    filters
+  import * as Types from 'types'
+  import ExpenditureForm from './ExpenditureForm'
+  import MoneyFormatting from 'mixins/MoneyFormatting'
+
+  @Component({
+    components: {ExpenditureForm}
+  })
+  export default class Expenditure extends mixins(MoneyFormatting) {
+    @Prop({type: Object, required: true}) expenditure: Types.Expenditure
+
+    editFormShown = false
+
+    get rowClass(): string | null {
+      return this.expenditure.budget ? 'budget' : null
+    }
+
+    @Action deleteExpenditure: (params: {expenditure: Types.Expenditure}) => Promise<void>
+
+    edit() { this.editFormShown = true }
+
+    finishEdit() {
+      this.editFormShown = false
+      this.$emit('updated')
+    }
+
+    cancelEdit() { this.editFormShown = false }
+
+    destroy() {
+      this.deleteExpenditure({expenditure: this.expenditure})
+          .then(() => this.$emit('updated'))
+          .catch(error => alert(error)) //TODO
+    }
   }
 </script>
 

@@ -8,7 +8,7 @@
         <label for="expenditure_category">Category</label>
         <input type="text"
                :name="props.fieldname"
-               v-model="expenditure.category"
+               v-model="scratchExpenditure.category"
                id="expenditure_category"
                maxlength="126"
                required />
@@ -21,7 +21,7 @@
         <template slot-scope="props">
           <input type="number"
                  :name="props.fieldname"
-                 :value="expenditure.quantity"
+                 v-model="scratchExpenditure.quantity"
                  min="1"
                  step="1"
                  class="small"
@@ -33,7 +33,7 @@
         <template slot-scope="props">
           <input type="text"
                  :name="props.fieldname"
-                 :value="expenditure.name"
+                 v-model="scratchExpenditure.name"
                  id="expenditure_name"
                  maxlength="126"
                  required />
@@ -49,7 +49,7 @@
             <template slot-scope="props">
               $<input type="number"
                       :name="props.fieldname"
-                      :value="expenditure.unit_amount"
+                      v-model="scratchExpenditure.unit_amount"
                       min="0.01"
                       step="0.01"
                       required
@@ -69,35 +69,22 @@
             <template slot-scope="props">
               <input type="number"
                      :name="props.fieldname"
-                     :value="expenditure.period_count"
+                     v-model="scratchExpenditure.period_count"
                      min="1"
                      step="1"
                      required
                      class="small"
-                     id="expenditure_period_count"
-                     @keyup="updatePeriods"
-                     @change="updatePeriods" />
+                     ref="expenditurePeriodCount" />
             </template>
           </field>
           <field name="item[period_unit]" :errors="errors" :inline="true">
             <template slot-scope="props">
               <select :name="props.fieldname"
                       id="expenditure_period"
+                      ref="expenditurePeriod"
                       required>
-                <option value="day"
-                        :selected="expenditure.period_unit == 'day'">
-                  day
-                </option>
-                <option value="week"
-                        :selected="expenditure.period_unit == 'week'">
-                  week
-                </option>
-                <option value="month"
-                        :selected="expenditure.period_unit == 'month'">month
-                </option>
-                <option value="year"
-                        :selected="expenditure.period_unit == 'year'">
-                  year
+                <option v-for="(period, index) in periods" :value="period" :selected="scratchExpenditure.period_unit === period">
+                  {{periodNames[index]}}
                 </option>
               </select>
             </template>
@@ -111,14 +98,14 @@
       <input type="checkbox"
              name="item[budget]"
              value="1"
-             :checked="expenditure.budget" /> This is a budget
+             :checked="scratchExpenditure.budget" /> This is a budget
     </label>
     <label>
       <input type="hidden" name="item[sales_tax]" value="0" />
       <input type="checkbox"
              name="item[sales_tax]"
              value="1"
-             :checked="expenditure.sales_tax" />
+             :checked="scratchExpenditure.sales_tax" />
       Add sales tax
     </label>
 
@@ -126,7 +113,7 @@
       <template slot-scope="props">
         <label for="expenditure_notes">Notes</label>
         <textarea :name="props.fieldname"
-                  :value="expenditure.notes"
+                  v-model="scratchExpenditure.notes"
                   id="expenditure_notes" />
       </template>
     </field>
@@ -138,72 +125,101 @@
   </form>
 </template>
 
-<script>
-  import axios from 'axios'
-  import Field from 'components/Field.vue'
+<script lang="ts">
+  import Vue from 'vue'
+  import Component from 'vue-class-component'
+  import {Prop} from 'vue-property-decorator'
+  import * as _ from 'lodash'
+  import Axios from 'axios'
+
+  import {Errors, Expenditure, Period} from 'types'
+  import Field from 'components/Field'
+
+  interface ScratchExpenditure {
+    category?: string
+    quantity: number
+    name?: string
+    unit_amount?: number
+    period_count: number
+    period_unit: Period
+    budget?: boolean
+    sales_tax?: boolean
+    notes?: string
+  }
+
+  const defaultExpenditure: ScratchExpenditure = {
+    quantity: 1,
+    period_count: 1,
+    period_unit: 'day'
+  }
 
   const singulars = ['day', 'week', 'month', 'year']
   const plurals = ['days', 'weeks', 'months', 'years']
 
-  export default {
-    props: {
-      method: {type: String, required: true},
-      action: {type: String, required: true},
-      expenditure: {
-        default() {
-          return {
-            quantity: 1,
-            period_count: 1,
-            period: 'day'
-          }
+  @Component({
+    components: {Field}
+  })
+  export default class ExpenditureForm extends Vue {
+    $el!: HTMLFormElement
+    $refs!: {
+      expenditurePeriodCount: HTMLInputElement
+      expenditurePeriod: HTMLSelectElement
+    }
+
+    @Prop({type: Object, required: false}) expenditure?: Expenditure
+
+    scratchExpenditure: ScratchExpenditure = defaultExpenditure
+    errors: Errors = {}
+
+    private get pluralizePeriods(): boolean { return Number(this.$refs.expenditurePeriodCount.value) !== 1 }
+
+    get periods(): string[] { return singulars }
+    get periodNames(): string[] { return this.pluralizePeriods ? plurals : singulars }
+
+    get method(): string {
+      if (_.isNil(this.expenditure)) return 'post'
+      else return 'patch'
+    }
+    get action(): string {
+      if (_.isNil(this.expenditure))
+        return `/expenditures.json`
+      else
+        return `/expenditures/${this.expenditure.id}.json`
+    }
+
+    submit() {
+      let data = new FormData(this.$el)
+      Axios[this.method](this.action, data).then(() => {
+        this.$emit('submitted')
+      }).catch(error => {
+        if (error.response && error.response.status === 422) {
+          this.errors = error.response.data.errors
         }
-      }
-    },
-    data() {
-      return {
-        errors: {}
-      }
-    },
-    components: {Field},
-    methods: {
-      submit() {
-        let data = new FormData(this.$el)
-        axios[this.method](this.action, data).then(() => {
-          this.$emit('submitted')
-        }).catch((error) => {
-          if (error.response && error.response.status === 422) {
-            this.errors = error.response.data.errors
-          }
-          else alert(error) //TODO
-        })
-      },
+        else alert(error) //TODO
+      })
+    }
 
-      cancel() { this.$emit('cancel') },
+    cancel() { this.$emit('cancel') }
 
-      reset() {
-        this.$el.querySelectorAll('input:not([type=submit]), select, textarea')
-            .forEach((element) => {
-              if (element.getAttribute('name') === 'item[quantity]' ||
-                  element.getAttribute('name') === 'item[period_count]')
-                element.value = '1'
-              else if (element.getAttribute('name') === 'item[period]')
-                element.options[0].selected = true
-              else element.value = ''
-            })
-        this.$emit('reset')
-      },
-
-      updatePeriods() {
-        let field = this.$el.querySelector('#expenditure_period_count')
-        let count = Number.parseInt(field.value)
-        let strings = count === 1 ? singulars : plurals
-        Array.from(this.$el.querySelector('#expenditure_period').options)
-             .forEach((item, index) => {
-               item.textContent = strings[index]
-             })
+    reset() {
+      if (_.isNil(this.expenditure))
+        this.scratchExpenditure = _.clone(defaultExpenditure)
+      else {
+        this.scratchExpenditure = _.pick(this.expenditure, [
+          'category',
+          'quantity',
+          'name',
+          'unit_amount',
+          'period_count',
+          'period_unit',
+          'budget',
+          'sales_tax',
+          'notes'
+        ]) as ScratchExpenditure
       }
-    },
-    mounted() { this.updatePeriods() }
+    }
+
+    mounted() { this.reset() }
   }
 </script>
 

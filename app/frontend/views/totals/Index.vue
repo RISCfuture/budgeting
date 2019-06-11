@@ -2,56 +2,45 @@
   <div>
     <navbar />
 
-    <dl>
-      <dd>{{income | formatSignedMoney}}</dd>
+    <dl v-if="totals">
+      <dd>{{totals.income | formatSignedMoney}}</dd>
       <dt>Income</dt>
 
       <dd>
         <dl>
-          <dd>{{expenditures | formatSignedMoney}}</dd>
+          <dd>{{totals.expenditures | formatSignedMoney}}</dd>
           <dt>Gross</dt>
-          <dd>{{taxes | formatSignedMoney}}</dd>
+          <dd>{{totals.taxes | formatSignedMoney}}</dd>
           <dt>Taxes</dt>
-          <dd>{{expendituresAndTaxes | formatSignedMoney}}</dd>
+          <dd>{{totals.net_expenditures | formatSignedMoney}}</dd>
           <dt>Net</dt>
         </dl>
       </dd>
       <dt>Expenditures</dt>
 
-      <dd class="net">{{netTotal | formatSignedMoney}}</dd>
+      <dd class="net">{{totals.total | formatSignedMoney}}</dd>
       <dt>Net</dt>
     </dl>
   </div>
 </template>
 
-<script>
-  import axios from 'axios'
-  import {filters} from './../../helpers'
+<script lang="ts">
+  import Component, {mixins} from 'vue-class-component'
+  import Axios from 'axios'
 
-  export default {
-    data() {
-      return {
-        income: null,
-        expenditures: null,
-        taxes: null,
-        expendituresAndTaxes: null,
-        netTotal: null
-      }
-    },
-    methods: {
-      refresh() {
-        axios.get('/totals.json').then(({data}) => {
-          this.income = data.income
-          this.expenditures = data.gross_expenditures
-          this.taxes = data.taxes
-          this.expendituresAndTaxes = data.net_expenditures
-          this.netTotal = data.total
-        }).catch((error) => {
-          alert(error) //TODO
-        })
-      }
-    },
-    filters,
+  import {Totals} from 'types'
+  import MoneyFormatting from 'mixins/MoneyFormatting'
+
+  @Component
+  export default class Index extends mixins(MoneyFormatting) {
+    totals?: Totals = null
+
+    refresh() {
+      Axios.get<Totals>('/totals.json')
+          .then(response => this.totals = response.data)
+          .catch(error => alert(error)) //TODO
+    }
+
     mounted() { this.refresh() }
   }
 </script>
