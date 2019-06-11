@@ -1,6 +1,8 @@
 language: ruby
 rvm:
 - 2.6.3
+node_js:
+- 8.9.4
 postgres:
   adapter: postgresql
   database: budgeting_test
@@ -12,7 +14,8 @@ before_script:
 - createuser budgeting
 - createdb -O budgeting budgeting_test
 - yarn install
-- bundle exec rails db:migrate webpacker:compile
+- bundle exec rails db:migrate
+- bundle exec rails webpacker:compile
 deploy:
   provider: heroku
   app: tbm-budget
