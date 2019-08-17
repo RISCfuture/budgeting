@@ -6,20 +6,27 @@ node_js:
 services:
 - postgresql
 addons:
-  postgresql: "9.6"
+  postgresql: '11.4'
 before_install:
-  - gem update --system
-  - gem install bundler
+- sudo apt-get update
+- sudo apt-get --yes remove postgresql\*
+- sudo apt-get install -y postgresql-11 postgresql-client-11
+- sudo cp /etc/postgresql/{9.6,11}/main/pg_hba.conf
+- sudo service postgresql restart 11
+- gem update --system
+- gem install bundler
 before_script:
 - createuser budgeting
 - createdb -O budgeting budgeting_test
 - yarn install
-- bundle exec rails db:migrate
-- bundle exec rails webpacker:compile
+- bundle exec rails db:migrate webpacker:compile
 deploy:
   provider: heroku
   app: tbm-budget
   api_key:
     secure: dYszTtZ7WgtvaD0rZQVCvjWsb5j3fgtVCaNCjD+RaMAJrkh6/ShfRs97as5MQiDIFhArlCy8zUKg90eWOHAE50mOplb9JkjWEcTW05R34TX2X7rafVQe70qLRo0DIdniPBgY44k5bFDxMn9EYlR4Rin5GvWLg87FvJzUmXRVf/xROIbHc4+IlNJlo6Z195Gr6XLYB0YrTEgXt3J5Lvmo80AnJ8uDVCmaGHEf41DPTEdMe0FSv5/t4/avPbTRv4WwKCTyf5T0TYuJqv9YYDDlyP7RReRs2aPQtKtuf7AF+cRkjdd0kCDypvicTWeDSu6G2LyzHk0GBJSVQDk6LZH7NCiKVCEjSNKYo53FxMEkcFQ3zwRYx5ANsQt9DTod+t5Q5V8kquBso1Pwn3bdPCOk2VEGKuSs6ss8oSbGNbO9NavKMen1VfDkMFmnsP96FhR3d1vCkWdc4w0XepzLS0WmSOrFjQ180ry2c8wz6va6IZBUcI41x5lAbu34ZBsnasNUKDpQpuZd8u79PxpoSrTcnej3woPxVUOGOQSzuUN2fWjtMfsNAbAFHC61echt9iC7LeeIApLf6So5+F8x9NnVAwu3Fsd+p08oiVRf5BPYzanP6WYaL83IKdQk4zuy3TESb/XANmsH7S6fa9yRRgnVlWjn+w8hww0DIJSGIpAn88s=
 env:
-  secure: Jty8DAjv58ZoZj85500a3kOCUtUe3rDXOyadLAqxyEo8kYBbgy8a0CbHXkct3sTx5cGzrNSfauBljn0rDtybs04h0tuOd2AtC4Ijp23wwp+I5uzCaDYvW1ZGShJ/k9AHNgJXxAm4XpbxnEA09bzoMZh7GzoMOsrSArBfULHWZS/IW6Ovts6Kf2bciLLKJLI9PG4iUqI+41i8FrDQS0zBWJaYkXrceBbLsARhlFxrV7ljytzEc8oaUNegwdH75tEmFjKoKagGHy0Eq4EGEaVPkqUhxeKZHfRz399Ju2Rf1R1TItn3vehpeUWdD9ys3wAUyScQcscRexO5+AGh9/QFw5gKIIKII78pdid7tVDlrqN6wgmqidhaS45gmlnonYUFTSYWCn4INTbOtOQBGpichkkK3ZiE81M7/wn1GmWMp3ny99ZwpdLYqYMOBQ805nW/spBMQ8jxGnI091Ye3cI4Ibo1QW7G9H11K43QbPQ5p0OVDR0/6LubPUMh8rknti96G/Prv+9X4OzfVf9qOupdK1n+lvMbDklnVa/07EFTWAafVI8vqdEX6ki9k4Y2YG29unr+iO3qGf4YTBNvpARKTeDQHP4pvb5NbL0uhMcbURmuQigs+bttyImqUJsbCnUO3vKfs37pLRC9rmQvy6GrUkcDlv0hwY3j/GaXsGrHARM=
+  global:
+    - secure: xagBllJQfsmf5qlsid7W6sHS8NefFrfukASul8Jupzx28Y4kCNKbsuvkbbdnUflm3VHF5OotdhwuAxP1A9i8y5367dI0Qat15oCzjBl7XdrZ4lRdnlawIPUqGNMytOoRIjZkNwMwRq14yqr94V3DxCiHv9Fpn2SQ5xzdcsmmEryCKh4IyXRF3YiqVt0hah1L3QbgRF03a1xo68X9WRyIGgliwNp2wuPvy8Z552IqLrEXXb7ML2sp2AblK41daWWh2QJjnBocITCWdZTF4TkCO8cGnk9S1PvKiNVBos5pXm2sMgR/MM2ENur1D34cOdcvgQi1tittK8q83v1jUayh5+tNFSOj8jsc8eqCmjoEZs9MH733YNbEkwEoIGyUJ1T25soHrYXUKie2fZEkqRIV5FRanjoTLvFZKFpbwrHvR0KGZRQQ2EISs4UvEY4f1oq8KlPAVl5r3LJYeRv2joJ/xdnLaCX5JsjXnx5entY8qpujXwdvOf5QDWUZvTSJD3TWXgeHGYUOrxCiTeXNiy5xADYJEJK/fy3X9hF5LJztKjkuyOqteqb1cfKGd9PwkgxmOL82jkZY+erPgdlo+VkdvsKq9PdfP9wACIrxdvkGfshsP2+/LjxT8H6hLfNcN63MmuoRWbGBfgKUkvVCgC8srq1RYAd2KOrCRvx1Hb7tm1k=
+    - RAILS_TEST_DB_USER=postgres
+    - PGUSER=postgres

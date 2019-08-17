@@ -6,3 +6,9 @@ config/master.key
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+
+.bundle
+spec/examples.txt
+tmp/cache/*
+tmp/development_secret.txt
+vendor/bundle
