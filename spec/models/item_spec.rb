@@ -5,11 +5,11 @@ RSpec.describe Item, type: :model do
     let(:item) { FactoryBot.build :item, unit_amount: 5, quantity: 2, period_unit: :month, period_count: 2, sales_tax: true }
 
     it "should return the total value of the item" do
-      expect(item.amount).to eql(10.00)
+      expect(item.amount).to eq(10.00)
     end
 
     it "should optionally include sales tax" do
-      expect(item.amount(include_tax: true)).to eql(10.85)
+      expect(item.amount(include_tax: true)).to eq(10.85)
     end
   end
 
@@ -35,9 +35,9 @@ RSpec.describe Item, type: :model do
       expect(item.prorated_amount(interval: :daily)).to be_within(0.01).of(0.16)
       expect(item.prorated_amount(interval: :weekly)).to be_within(0.01).of(1.15)
       expect(item.prorated_amount(interval: :biweekly)).to be_within(0.01).of(2.30)
-      expect(item.prorated_amount(interval: :monthly)).to eql(5.00)
-      expect(item.prorated_amount(interval: :quarterly)).to eql(15.00)
-      expect(item.prorated_amount(interval: :annually)).to eql(60.00)
+      expect(item.prorated_amount(interval: :monthly)).to eq(5.00)
+      expect(item.prorated_amount(interval: :quarterly)).to eq(15.00)
+      expect(item.prorated_amount(interval: :annually)).to eq(60.00)
 
       item = FactoryBot.build(:item, unit_amount: 199, quantity: 1, period_unit: :year, period_count: 2)
       expect(item.prorated_amount(interval: :daily)).to be_within(0.01).of(0.27)

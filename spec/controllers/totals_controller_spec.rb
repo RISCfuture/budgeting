@@ -12,7 +12,7 @@ RSpec.describe TotalsController, type: :controller do
 
     it 'should render JSON totals data' do
       get :index, params: {format: 'json'}
-      expect(response.status).to eql(200)
+      expect(response.status).to be(200)
       expect(JSON.parse(response.body)).
           to eql('income'             => '620.0',
                  'gross_expenditures' => '47.28571428571429',

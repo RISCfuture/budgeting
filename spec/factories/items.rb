@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :item, class: Item do
+  factory :item, class: 'Item' do
     categories = %w[Home Gadgets Hobbies Family Food Self-Care Medical
                     Transportation Pets Income Withholdings].freeze
 
