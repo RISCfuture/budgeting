@@ -9,7 +9,7 @@
     "@types/node": "^13.9.8",
     "@types/numeral": "^0.0.26",
     "autoprefixer": "^9.7.5",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "babel-preset-minify": "^0.5.1",
     "bugsnag-vue": "^1.0.1",
     "coffeescript": "2.5.1",
